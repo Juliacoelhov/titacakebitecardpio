@@ -1,0 +1,1376 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tita Cake Bite - Cardápio</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            rose: {
+              50: '#fdf2f4', 100: '#fce7eb', 200: '#f9d0d9',
+              300: '#f4a8b8', 400: '#ed7a94', 500: '#e14d70',
+              600: '#cf3a5d', 700: '#ad2d4a', 800: '#8f2740', 900: '#78243a'
+            },
+            beige: {
+              50: '#fdf8f0', 100: '#faf0e0', 200: '#f5e0c4',
+              300: '#e8c99a', 400: '#d9ae72', 500: '#c99550',
+              600: '#b07d38', 700: '#8f6430', 800: '#73502a', 900: '#5e4224'
+            },
+            chocolate: {
+              50: '#f9f6f4', 100: '#f0e8e3', 200: '#e0d0c6',
+              300: '#ccb2a2', 400: '#b5907b', 500: '#a47762',
+              600: '#966556', 700: '#7d5347', 800: '#67453d', 900: '#563b34'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .font-display { font-family: 'Playfair Display', serif; }
+    .font-body   { font-family: 'Nunito', sans-serif; }
+
+    .cake-card { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+    .cake-card:hover { transform: translateY(-4px); }
+    .cake-card.selected { box-shadow: 0 0 0 3px #e14d70; border-color: #e14d70 !important; }
+
+    .type-card { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); cursor: pointer; }
+    .type-card:hover { transform: translateY(-3px); }
+    .type-card.selected { box-shadow: 0 0 0 3px #e14d70; border-color: #e14d70 !important; }
+
+    .filling-chip { transition: all 0.2s ease; }
+    .filling-chip:hover:not(.selected):not(:disabled) { background: #fce7eb; }
+    .filling-chip.selected { background: linear-gradient(135deg, #e14d70, #cf3a5d); color: white; border-color: #e14d70; }
+    .filling-chip:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .massa-chip { transition: all 0.2s ease; }
+    .massa-chip:hover:not(.selected) { background: #faf0e0; }
+    .massa-chip.selected { background: linear-gradient(135deg, #7d5347, #67453d); color: white; border-color: #7d5347; }
+
+    .sweet-item { transition: all 0.2s ease; }
+    .sweet-item:hover { background: #faf0e0; }
+
+    .qty-btn { transition: all 0.15s ease; }
+    .qty-btn:hover:not(:disabled) { transform: scale(1.1); }
+    .qty-btn:active:not(:disabled) { transform: scale(0.95); }
+
+    .summary-enter { animation: slideUp 0.3s ease-out; }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .price-tag { background: linear-gradient(135deg, #e14d70, #cf3a5d); }
+    .decorative-line { background: linear-gradient(90deg, transparent, #e14d70, transparent); }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #fdf8f0; }
+    ::-webkit-scrollbar-thumb { background: #e8c99a; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d9ae72; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+</head>
+<body class="h-full font-body bg-rose-50 text-chocolate-800 overflow-auto">
+<div id="app-wrapper" class="w-full min-h-full">
+
+  <!-- ===== HEADER ===== -->
+  <header class="bg-white border-b-4 border-rose-300 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-6">
+      <div class="text-center">
+        <div class="flex items-center justify-center gap-3 mb-2">
+          <span class="text-3xl">🧁</span>
+          <h1 id="shop-name" class="font-display text-3xl md:text-4xl font-bold text-chocolate-700">Tita Cake Bite</h1>
+          <span class="text-3xl">🍰</span>
+        </div>
+        <p id="shop-tagline" class="text-rose-500 font-medium tracking-wide">Doces que encantam, momentos que ficam</p>
+        <div class="decorative-line h-0.5 w-32 mx-auto mt-4 rounded-full"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main class="max-w-6xl mx-auto px-4 py-8">
+
+    <!-- ── SEÇÃO: BOLOS ── -->
+    <section class="mb-12">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="flex-1 h-px bg-gradient-to-r from-transparent via-chocolate-300 to-transparent"></div>
+        <h2 class="font-display text-2xl md:text-3xl font-semibold text-chocolate-700 flex items-center gap-2">
+          <span>🎂</span> Bolos Decorados
+        </h2>
+        <div class="flex-1 h-px bg-gradient-to-r from-transparent via-chocolate-300 to-transparent"></div>
+      </div>
+
+      <!-- Tipo de Bolo -->
+      <p class="text-center text-chocolate-600 mb-6 max-w-2xl mx-auto">Escolha o tipo de bolo para a sua ocasião especial</p>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+
+        <div class="type-card bg-white rounded-2xl p-6 border-2 border-chocolate-200 hover:border-rose-400"
+             onclick="selectCakeType('chantininho')" data-type="chantininho">
+          <div class="text-3xl mb-3">🎂</div>
+          <h3 class="font-display text-lg font-semibold text-chocolate-700 mb-1">Chantininho</h3>
+          <p class="text-chocolate-500 text-sm mb-2">3 recheios inclusos</p>
+          <p class="text-rose-600 font-semibold text-sm">A partir de R$ 62,50</p>
+        </div>
+
+        <div class="type-card bg-white rounded-2xl p-6 border-2 border-chocolate-200 hover:border-rose-400"
+             onclick="selectCakeType('corte')" data-type="corte">
+          <div class="text-3xl mb-3">🍰</div>
+          <h3 class="font-display text-lg font-semibold text-chocolate-700 mb-1">Bolo de Corte</h3>
+          <p class="text-chocolate-500 text-sm mb-2">2 recheios inclusos</p>
+          <p class="text-rose-600 font-semibold text-sm">R$ 10,50 a fatia</p>
+        </div>
+
+        <div class="type-card bg-white rounded-2xl p-6 border-2 border-chocolate-200 hover:border-rose-400"
+             onclick="selectCakeType('pasta')" data-type="pasta">
+          <div class="text-3xl mb-3">🎨</div>
+          <h3 class="font-display text-lg font-semibold text-chocolate-700 mb-1">Pasta Americana</h3>
+          <p class="text-chocolate-500 text-sm mb-2">3 recheios inclusos</p>
+          <p class="text-rose-600 font-semibold text-sm">A partir de R$ 15,00 a fatia</p>
+        </div>
+      </div>
+
+      <!-- Tamanhos Chantininho -->
+      <div id="chantininho-sizes" class="hidden">
+        <p class="text-center text-chocolate-600 mb-5">Selecione o tamanho e depois escolha até <strong>3 recheios</strong></p>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8" id="cake-sizes">
+
+          <button onclick="selectCake('10cm', 62.50)" class="cake-card bg-white rounded-2xl p-4 border-2 border-chocolate-200 hover:border-rose-400 cursor-pointer text-left" data-size="10cm">
+            <div class="flex justify-between items-start mb-3"><span class="text-3xl">🎂</span><span class="price-tag text-white text-xs font-bold px-2 py-1 rounded-full">R$ 62,50</span></div>
+            <h3 class="font-display text-base font-semibold text-chocolate-700 mb-0.5">10 cm</h3>
+            <p class="text-chocolate-500 text-xs">5 fatias</p>
+          </button>
+
+          <button onclick="selectCake('15cm', 125.00)" class="cake-card bg-white rounded-2xl p-4 border-2 border-chocolate-200 hover:border-rose-400 cursor-pointer text-left" data-size="15cm">
+            <div class="flex justify-between items-start mb-3"><span class="text-3xl">🎂</span><span class="price-tag text-white text-xs font-bold px-2 py-1 rounded-full">R$ 125,00</span></div>
+            <h3 class="font-display text-base font-semibold text-chocolate-700 mb-0.5">15 cm</h3>
+            <p class="text-chocolate-500 text-xs">10 fatias</p>
+          </button>
+
+          <button onclick="selectCake('17cm', 187.50)" class="cake-card bg-white rounded-2xl p-4 border-2 border-chocolate-200 hover:border-rose-400 cursor-pointer text-left" data-size="17cm">
+            <div class="flex justify-between items-start mb-3"><span class="text-3xl">🎂</span><span class="price-tag text-white text-xs font-bold px-2 py-1 rounded-full">R$ 187,50</span></div>
+            <h3 class="font-display text-base font-semibold text-chocolate-700 mb-0.5">17 cm</h3>
+            <p class="text-chocolate-500 text-xs">15 fatias</p>
+          </button>
+
+          <button onclick="selectCake('20cm', 250.00)" class="cake-card bg-white rounded-2xl p-4 border-2 border-chocolate-200 hover:border-rose-400 cursor-pointer text-left" data-size="20cm">
+            <div class="flex justify-between items-start mb-3"><span class="text-3xl">🎂</span><span class="price-tag text-white text-xs font-bold px-2 py-1 rounded-full">R$ 250,00</span></div>
+            <h3 class="font-display text-base font-semibold text-chocolate-700 mb-0.5">20 cm</h3>
+            <p class="text-chocolate-500 text-xs">20 fatias</p>
+          </button>
+
+          <button onclick="selectCake('23cm', 313.50)" class="cake-card bg-white rounded-2xl p-4 border-2 border-chocolate-200 hover:border-rose-400 cursor-pointer text-left" data-size="23cm">
+            <div class="flex justify-between items-start mb-3"><span class="text-3xl">🎂</span><span class="price-tag text-white text-xs font-bold px-2 py-1 rounded-full">R$ 313,50</span></div>
+            <h3 class="font-display text-base font-semibold text-chocolate-700 mb-0.5">23 cm</h3>
+            <p class="text-chocolate-500 text-xs">25 fatias</p>
+          </button>
+
+          <button onclick="selectCake('25cm', 375.00)" class="cake-card bg-white rounded-2xl p-4 border-2 border-chocolate-200 hover:border-rose-400 cursor-pointer text-left relative" data-size="25cm">
+            <div class="absolute -top-2 -right-2 bg-rose-500 text-white text-xs font-bold px-2 py-1 rounded-full">⭐ Popular</div>
+            <div class="flex justify-between items-start mb-3"><span class="text-3xl">🎂</span><span class="price-tag text-white text-xs font-bold px-2 py-1 rounded-full">R$ 375,00</span></div>
+            <h3 class="font-display text-base font-semibold text-chocolate-700 mb-0.5">25 cm</h3>
+            <p class="text-chocolate-500 text-xs">30 fatias</p>
+          </button>
+
+          <button onclick="selectCake('27cm', 500.00)" class="cake-card bg-white rounded-2xl p-4 border-2 border-chocolate-200 hover:border-rose-400 cursor-pointer text-left" data-size="27cm">
+            <div class="flex justify-between items-start mb-3"><span class="text-3xl">🎂</span><span class="price-tag text-white text-xs font-bold px-2 py-1 rounded-full">R$ 500,00</span></div>
+            <h3 class="font-display text-base font-semibold text-chocolate-700 mb-0.5">27 cm</h3>
+            <p class="text-chocolate-500 text-xs">40 fatias</p>
+          </button>
+
+          <button onclick="selectCake('30cm', 625.00)" class="cake-card bg-white rounded-2xl p-4 border-2 border-chocolate-200 hover:border-rose-400 cursor-pointer text-left" data-size="30cm">
+            <div class="flex justify-between items-start mb-3"><span class="text-3xl">🎂</span><span class="price-tag text-white text-xs font-bold px-2 py-1 rounded-full">R$ 625,00</span></div>
+            <h3 class="font-display text-base font-semibold text-chocolate-700 mb-0.5">30 cm</h3>
+            <p class="text-chocolate-500 text-xs">50 fatias</p>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Info Bolo de Corte -->
+      <div id="corte-info" class="hidden mb-6">
+        <div class="bg-beige-50 border-2 border-beige-200 rounded-2xl p-5">
+          <div class="flex items-start gap-3 mb-4">
+            <span class="text-2xl">💡</span>
+            <p class="text-chocolate-700 text-sm">Bolo de Corte com <strong>2 recheios</strong> à sua escolha. Preço de <strong>R$ 10,50 a fatia</strong>. Escolha a massa e os recheios abaixo.</p>
+          </div>
+          <div class="flex items-center gap-4 p-3 bg-white rounded-xl border border-beige-300">
+            <span class="text-chocolate-700 font-medium">Quantidade de fatias:</span>
+            <div class="flex items-center gap-2">
+              <button onclick="updateCakeSlices('corte', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+              <span id="corte-slices" class="w-12 text-center font-semibold text-chocolate-700">1</span>
+              <button onclick="updateCakeSlices('corte', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+            </div>
+            <span class="text-rose-600 font-semibold">R$ <span id="corte-total">10,50</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Pasta Americana -->
+      <div id="pasta-info" class="hidden mb-6">
+        <div class="bg-beige-50 border-2 border-beige-200 rounded-2xl p-5">
+          <div class="flex items-start gap-3 mb-4">
+            <span class="text-2xl">💡</span>
+            <p class="text-chocolate-700 text-sm">Bolo em Pasta Americana com <strong>3 recheios</strong> e decoração personalizada. Preço <strong>a partir de R$ 15,00 por fatia</strong>, podendo variar conforme a personalização. Escolha a massa e os recheios abaixo.</p>
+          </div>
+          <div class="flex items-center gap-4 p-3 bg-white rounded-xl border border-beige-300">
+            <span class="text-chocolate-700 font-medium">Quantidade de fatias:</span>
+            <div class="flex items-center gap-2">
+              <button onclick="updateCakeSlices('pasta', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+              <span id="pasta-slices" class="w-12 text-center font-semibold text-chocolate-700">1</span>
+              <button onclick="updateCakeSlices('pasta', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+            </div>
+            <span class="text-rose-600 font-semibold">R$ <span id="pasta-total">15,00</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Escolha de Massa -->
+      <div id="massa-section" class="bg-white rounded-2xl p-6 border-2 border-chocolate-100 hidden mb-4">
+        <h3 class="font-display text-xl font-semibold text-chocolate-700 flex items-center gap-2 mb-4">
+          <span>🌾</span> Escolha a Massa
+        </h3>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="massa-grid">
+          <button onclick="selectMassa(this,'Baunilha')"  class="massa-chip px-4 py-3 rounded-xl border-2 border-chocolate-200 text-chocolate-700 font-medium text-sm">🍦 Baunilha</button>
+          <button onclick="selectMassa(this,'Chocolate')" class="massa-chip px-4 py-3 rounded-xl border-2 border-chocolate-200 text-chocolate-700 font-medium text-sm">🍫 Chocolate</button>
+          <button onclick="selectMassa(this,'Mista')"     class="massa-chip px-4 py-3 rounded-xl border-2 border-chocolate-200 text-chocolate-700 font-medium text-sm">🎂 Mista</button>
+          <button onclick="selectMassa(this,'Red Velvet')"class="massa-chip px-4 py-3 rounded-xl border-2 border-chocolate-200 text-chocolate-700 font-medium text-sm">❤️ Red Velvet</button>
+        </div>
+      </div>
+
+      <!-- Escolha de Recheios -->
+      <div id="fillings-section" class="bg-white rounded-2xl p-6 border-2 border-chocolate-100 hidden">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-display text-xl font-semibold text-chocolate-700 flex items-center gap-2">
+            <span>🍫</span> Escolha os Recheios
+          </h3>
+          <span id="filling-counter" class="bg-rose-100 text-rose-600 px-3 py-1 rounded-full text-sm font-semibold">0/3 selecionados</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" id="fillings-grid">
+          <button onclick="toggleFilling(this,'Beijinho')"                class="filling-chip px-4 py-3 rounded-xl border-2 border-chocolate-200 text-chocolate-700 font-medium text-sm">⚪ Beijinho</button>
+          <button onclick="toggleFilling(this,'Brigadeiro')"              class="filling-chip px-4 py-3 rounded-xl border-2 border-chocolate-200 text-chocolate-700 font-medium text-sm">🍫 Brigadeiro</button>
+          <button onclick="toggleFilling(this,'Brigadeiro Branco')"       class="filling-chip px-4 py-3 rounded-xl border-2 border-chocolate-200 text-chocolate-700 font-medium text-sm">🤍 Brigadeiro Branco</button>
+          <button onclick="toggleFilling(this,'Doce de Leite')"           class="filling-chip px-4 py-3 rounded-xl border-2 border-chocolate-200 text-chocolate-700 font-medium text-sm">🍯 Doce de Leite</button>
+          <button onclick="toggleFilling(this,'Doce de Leite com Ameixa')"class="filling-chip px-4 py-3 rounded-xl border-2 border-chocolate-200 text-chocolate-700 font-medium text-sm">🍇 D. Leite + Ameixa</button>
+          <button onclick="toggleFilling(this,'Morango')"                 class="filling-chip px-4 py-3 rounded-xl border-2 border-chocolate-200 text-chocolate-700 font-medium text-sm">🍓 Morango</button>
+          <button onclick="toggleFilling(this,'Ninho')"                   class="filling-chip px-4 py-3 rounded-xl border-2 border-chocolate-200 text-chocolate-700 font-medium text-sm">🥛 Ninho</button>
+          <button onclick="toggleFilling(this,'Ouro Branco')"             class="filling-chip px-4 py-3 rounded-xl border-2 border-chocolate-200 text-chocolate-700 font-medium text-sm">✨ Ouro Branco</button>
+          <button onclick="toggleFilling(this,'Sonho de Valsa')"          class="filling-chip px-4 py-3 rounded-xl border-2 border-chocolate-200 text-chocolate-700 font-medium text-sm">💛 Sonho de Valsa</button>
+        </div>
+
+        <!-- Adicionais -->
+        <div class="mt-6 pt-4 border-t border-chocolate-100 hidden" id="extras-section">
+          <h3 class="font-display text-lg font-semibold text-chocolate-700 mb-4 flex items-center gap-2">
+            <span>🌸</span> Adicionais
+          </h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="extras-grid">
+            <label class="flex items-center gap-3 p-3 rounded-xl border-2 border-chocolate-200 hover:bg-rose-50 cursor-pointer">
+              <input type="checkbox" id="extra-morango"    onchange="updateExtras()" class="w-4 h-4 accent-rose-600">
+              <span class="text-chocolate-700 font-medium text-sm flex-1">🍓 Morangos</span>
+              <span id="price-extra-morango" class="text-rose-600 text-xs font-semibold"></span>
+            </label>
+            <label class="flex items-center gap-3 p-3 rounded-xl border-2 border-chocolate-200 hover:bg-rose-50 cursor-pointer">
+              <input type="checkbox" id="extra-nutella"    onchange="updateExtras()" class="w-4 h-4 accent-rose-600">
+              <span class="text-chocolate-700 font-medium text-sm flex-1">🌰 Nutella</span>
+              <span id="price-extra-nutella" class="text-rose-600 text-xs font-semibold"></span>
+            </label>
+            <label class="flex items-center gap-3 p-3 rounded-xl border-2 border-chocolate-200 hover:bg-rose-50 cursor-pointer">
+              <input type="checkbox" id="extra-brigadeiros" onchange="updateExtras()" class="w-4 h-4 accent-rose-600">
+              <span class="text-chocolate-700 font-medium text-sm flex-1">🍫 Brigadeiros</span>
+              <span id="price-extra-brigadeiros" class="text-rose-600 text-xs font-semibold"></span>
+            </label>
+            <label class="flex items-center gap-3 p-3 rounded-xl border-2 border-chocolate-200 hover:bg-rose-50 cursor-pointer">
+              <input type="checkbox" id="extra-flores"     onchange="updateExtras()" class="w-4 h-4 accent-rose-600">
+              <span class="text-chocolate-700 font-medium text-sm flex-1">🌼 Flores Naturais</span>
+              <span id="price-extra-flores" class="text-rose-600 text-xs font-semibold"></span>
+            </label>
+                        
+            <!-- Topo de Bolo -->
+            <label class="flex items-center gap-3 p-3 rounded-xl border-2 border-chocolate-200 hover:bg-rose-50 cursor-pointer">
+              <input type="checkbox" id="extra-topo-simples" onchange="updateExtras()" class="w-4 h-4 accent-rose-600">
+              <span class="text-chocolate-700 font-medium text-sm flex-1">🎂 Topo de Bolo Simples</span>
+              <span class="text-rose-600 text-xs font-semibold">R$ 26,00</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 rounded-xl border-2 border-chocolate-200 hover:bg-rose-50 cursor-pointer">
+              <input type="checkbox" id="extra-topo-camadas" onchange="updateExtras()" class="w-4 h-4 accent-rose-600">
+              <span class="text-chocolate-700 font-medium text-sm flex-1">🎂 Topo de Bolo Camadas</span>
+              <span class="text-rose-600 text-xs font-semibold">R$ 33,00</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 rounded-xl border-2 border-chocolate-200 hover:bg-rose-50 cursor-pointer">
+              <input type="checkbox" id="extra-topo-flores" onchange="updateExtras()" class="w-4 h-4 accent-rose-600">
+              <span class="text-chocolate-700 font-medium text-sm flex-1">🌸 Topo de Bolo Flores</span>
+              <span class="text-rose-600 text-xs font-semibold">R$ 36,00</span>
+            </label>
+          </div>
+          <p class="text-chocolate-500 text-xs mt-3 text-center">*Selecione o tamanho do bolo para ver os preços dos adicionais (exceto topo de bolo com valores fixos)</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── SEÇÃO: DOCES FINOS ── -->
+    <section class="mb-12">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="flex-1 h-px bg-gradient-to-r from-transparent via-chocolate-300 to-transparent"></div>
+        <h2 id="sweets-title" class="font-display text-2xl md:text-3xl font-semibold text-chocolate-700 flex items-center gap-2">
+          <span>🍬</span> Doces Finos
+        </h2>
+        <div class="flex-1 h-px bg-gradient-to-r from-transparent via-chocolate-300 to-transparent"></div>
+      </div>
+
+      <div class="bg-beige-100 border-2 border-beige-300 rounded-2xl p-4 mb-6 flex items-center gap-3">
+        <span class="text-2xl">💡</span>
+        <p class="text-chocolate-700 text-sm">
+          <strong>Cento de doces:</strong> R$ 180,00 (clássicos) | R$ 210,00 (gourmet) — Adicione quantidades de <strong>25 em 25 unidades</strong>
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <!-- Clássicos -->
+        <div class="bg-white rounded-2xl p-6 border-2 border-chocolate-100">
+          <h3 class="font-display text-lg font-semibold text-chocolate-700 flex items-center gap-2 pb-3 border-b border-chocolate-100 mb-4">
+            <span class="w-8 h-8 bg-rose-100 rounded-full flex items-center justify-center text-sm">🍫</span>
+            Clássicos
+            <span class="ml-auto text-xs bg-rose-100 text-rose-600 px-2 py-1 rounded-full">R$ 180,00/cento</span>
+          </h3>
+          <div class="space-y-3" id="traditional-sweets">
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">⚪</span><span class="font-medium text-chocolate-700">Beijinho</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('beijinho',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-beijinho" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('beijinho', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🟤</span><span class="font-medium text-chocolate-700">Brigadeiro</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('brigadeiro',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-brigadeiro" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('brigadeiro', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🤍</span><span class="font-medium text-chocolate-700">Brigadeiro Branco</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('brigadeirob',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-brigadeirob" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('brigadeirob', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">💛</span><span class="font-medium text-chocolate-700">Casadinho</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('casadinho',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-casadinho" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('casadinho', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🥜</span><span class="font-medium text-chocolate-700">Cajuzinho</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('cajuzinho',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-cajuzinho" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('cajuzinho', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🥥</span><span class="font-medium text-chocolate-700">Coco Queimado</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('cocoqueimado',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-cocoqueimado" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('cocoqueimado', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🍓</span><span class="font-medium text-chocolate-700">Morango</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('morango',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-morango" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('morango', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🥛</span><span class="font-medium text-chocolate-700">Ninho</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('ninho',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-ninho" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('ninho', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Gourmet -->
+        <div class="bg-white rounded-2xl p-6 border-2 border-chocolate-100">
+          <h3 class="font-display text-lg font-semibold text-chocolate-700 flex items-center gap-2 pb-3 border-b border-chocolate-100 mb-4">
+            <span class="w-8 h-8 bg-beige-100 rounded-full flex items-center justify-center text-sm">✨</span>
+            Gourmet
+            <span class="ml-auto text-xs bg-beige-100 text-chocolate-700 px-2 py-1 rounded-full">R$ 210,00/cento</span>
+          </h3>
+          <div class="space-y-3" id="gourmet-sweets">
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🌰</span><span class="font-medium text-chocolate-700">Amêndoas</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('amendoas',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-amendoas" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('amendoas', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🍫</span><span class="font-medium text-chocolate-700">Brigadeiro Belga</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('brigadeiroBelga',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-brigadeiroBelga" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('brigadeiroBelga', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🌀</span><span class="font-medium text-chocolate-700">Churros</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('churros',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-churros" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('churros', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🍮</span><span class="font-medium text-chocolate-700">Creme Brûlée</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('cremeBrulee',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-cremeBrulee" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('cremeBrulee', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🎊</span><span class="font-medium text-chocolate-700">Confetinho</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('confetinho',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-confetinho" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('confetinho', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🍑</span><span class="font-medium text-chocolate-700">Damasco</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('damasco',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-damasco" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('damasco', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🌰</span><span class="font-medium text-chocolate-700">Ferrero Rocher</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('ferreroRocher',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-ferreroRocher" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('ferreroRocher', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🍫</span><span class="font-medium text-chocolate-700">Kinder Bueno</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('kinderBueno',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-kinderBueno" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('kinderBueno', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🍫</span><span class="font-medium text-chocolate-700">Kit Kat</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('kitKat',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-kitKat" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('kitKat', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🍪</span><span class="font-medium text-chocolate-700">Mini Oreo</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('miniOreo',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-miniOreo" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('miniOreo', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🥛</span><span class="font-medium text-chocolate-700">Ninho com Nutela</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('ninhoNutela',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-ninhoNutela" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('ninhoNutela', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🟣</span><span class="font-medium text-chocolate-700">Olho de Sogra</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('olhoDeSogra',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-olhoDeSogra" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('olhoDeSogra', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">⚪</span><span class="font-medium text-chocolate-700">Rafaello</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('rafaello',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-rafaello" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('rafaello', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+            <div class="sweet-item flex items-center justify-between p-3 rounded-xl">
+              <div class="flex items-center gap-3"><span class="text-xl">🍇</span><span class="font-medium text-chocolate-700">Surpresa de Uva</span></div>
+              <div class="flex items-center gap-2">
+                <button onclick="updateSweet('surpresaUva',-25)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+                <span id="qty-surpresaUva" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+                <button onclick="updateSweet('surpresaUva', 25)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── SEÇÃO: PERSONALIZADOS ── -->
+    <section class="mb-12">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="flex-1 h-px bg-gradient-to-r from-transparent via-chocolate-300 to-transparent"></div>
+        <h2 class="font-display text-2xl md:text-3xl font-semibold text-chocolate-700 flex items-center gap-2">
+          <span>✨</span> Personalizados
+        </h2>
+        <div class="flex-1 h-px bg-gradient-to-r from-transparent via-chocolate-300 to-transparent"></div>
+      </div>
+
+      <div class="bg-beige-100 border-2 border-beige-300 rounded-2xl p-4 mb-6 flex items-center gap-3">
+        <span class="text-2xl">💡</span>
+        <p class="text-chocolate-700 text-sm">
+          <strong>Doces personalizados:</strong> Escolha a quantidade de cada item que deseja!
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🧁</span>
+              <span class="font-medium text-chocolate-700">Cupcake plano</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 20,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('cupcakePlano', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-cupcakePlano" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('cupcakePlano', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🧁</span>
+              <span class="font-medium text-chocolate-700">Mini Cupcake</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 15,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('miniCupcake', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-miniCupcake" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('miniCupcake', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🎂</span>
+              <span class="font-medium text-chocolate-700">Mini Cupcake 3D</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 25,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('miniCupcake3D', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-miniCupcake3D" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('miniCupcake3D', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🏠</span>
+              <span class="font-medium text-chocolate-700">Casinha</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 25,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('casinha', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-casinha" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('casinha', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🍭</span>
+              <span class="font-medium text-chocolate-700">Pirulito personalizado desenho simples</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 18,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('pirulitoSimples', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-pirulitoSimples" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('pirulitoSimples', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🧁</span>
+              <span class="font-medium text-chocolate-700">Cupcake</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 35,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('cupcake', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-cupcake" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('cupcake', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🍫</span>
+              <span class="font-medium text-chocolate-700">Brownie no palito desenho simples</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 25,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('browniePalito', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-browniePalito" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('browniePalito', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🍯</span>
+              <span class="font-medium text-chocolate-700">Pão de Mel 2D</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 20,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('paoDeMel2D', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-paoDeMel2D" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('paoDeMel2D', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🍯</span>
+              <span class="font-medium text-chocolate-700">Pão de Mel 3D</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 35,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('paoDeMel3D', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-paoDeMel3D" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('paoDeMel3D', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🍯</span>
+              <span class="font-medium text-chocolate-700">Pão de Mel plano</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 20,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('paoDeMelPlano', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-paoDeMelPlano" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('paoDeMelPlano', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🖼️</span>
+              <span class="font-medium text-chocolate-700">Porta Retrato</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 20,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('portaRetrato', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-portaRetrato" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('portaRetrato', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🍦</span>
+              <span class="font-medium text-chocolate-700">Pop Sicle</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 25,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('popSicle', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-popSicle" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('popSicle', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🍫</span>
+              <span class="font-medium text-chocolate-700">Trufa desenho plano</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 15,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('trufaPlana', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-trufaPlana" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('trufaPlana', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🍫</span>
+              <span class="font-medium text-chocolate-700">Trufa formato personagem</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 22,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('trufaPersonagem', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-trufaPersonagem" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('trufaPersonagem', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🎂</span>
+              <span class="font-medium text-chocolate-700">Micro cake plano</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 25,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('microCakePlano', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-microCakePlano" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('microCakePlano', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🎂</span>
+              <span class="font-medium text-chocolate-700">Mini Micro cake plano</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 18,50</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('miniMicroCakePlano', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-miniMicroCakePlano" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('miniMicroCakePlano', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border-2 border-chocolate-100">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🍎</span>
+              <span class="font-medium text-chocolate-700">Maçã chocolate personalizada</span>
+            </div>
+            <span class="text-rose-600 font-semibold text-sm">R$ 20,00</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updatePersonalizado('macaChocolate', -1)" class="qty-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 font-bold hover:bg-rose-200">−</button>
+            <span id="qty-macaChocolate" class="w-12 text-center font-semibold text-chocolate-700">0</span>
+            <button onclick="updatePersonalizado('macaChocolate', 1)" class="qty-btn w-8 h-8 rounded-full bg-beige-100 text-chocolate-600 font-bold hover:bg-beige-200">+</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── RESUMO DO PEDIDO ── -->
+    <section id="order-summary" class="hidden">
+      <div class="bg-gradient-to-br from-chocolate-700 via-chocolate-800 to-chocolate-900 rounded-3xl p-6 md:p-8 text-white shadow-2xl">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="text-3xl">📋</span>
+          <h2 class="font-display text-2xl font-bold">Resumo do Pedido</h2>
+        </div>
+        <div id="summary-content" class="space-y-4"></div>
+        <div class="mt-6 pt-6 border-t-2 border-chocolate-600">
+          <div class="flex justify-between items-center">
+            <span class="text-chocolate-300 text-lg">Total Estimado</span>
+            <span id="total-price" class="font-display text-3xl font-bold text-white">R$ 0,00</span>
+          </div>
+        </div>
+        <div class="mt-4 bg-chocolate-600/30 rounded-xl p-4 flex items-start gap-3">
+          <span class="text-xl">📱</span>
+          <p class="text-chocolate-200 text-sm">Entre em contato pelo WhatsApp para confirmar seu pedido e combinar detalhes de entrega!</p>
+        </div>
+        <button id="send-whatsapp"
+          class="mt-4 w-full bg-green-500 hover:bg-green-600 active:bg-green-700 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all text-lg">
+          <span class="text-2xl">📲</span> Enviar Pedido pelo WhatsApp
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="bg-chocolate-800 text-chocolate-200 py-8 mt-12">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <p class="font-display text-lg mb-2">Tita Cake Bite</p>
+      <p class="text-chocolate-400 text-sm">✨ Momentos mais doces, memórias eternas ✨</p>
+    </div>
+  </footer>
+
+</div><!-- #app-wrapper -->
+
+<script>
+  // ── STATE ──
+  const state = {
+    cakeType:  null,   // 'chantininho' | 'corte' | 'pasta'
+    cake:      null,   // size key (chantininho only)
+    cakePrice: 0,
+    massa:     null,
+    fillings:  [],
+    extras:    [],
+    corteSlices: 1,
+    pastaSlices: 1,
+    sweets: {
+      // Clássicos
+      beijinho: 0, brigadeiro: 0, brigadeirob: 0, casadinho: 0,
+      cajuzinho: 0, cocoqueimado: 0, morango: 0, ninho: 0,
+      // Gourmet
+      amendoas: 0, brigadeiroBelga: 0, churros: 0, cremeBrulee: 0,
+      confetinho: 0, damasco: 0, ferreroRocher: 0, kinderBueno: 0,
+      kitKat: 0, miniOreo: 0, ninhoNutela: 0, olhoDeSogra: 0,
+      rafaello: 0, surpresaUva: 0
+    },
+    personalizados: {
+      cupcakePlano: 0,
+      miniCupcake: 0,
+      miniCupcake3D: 0,
+      casinha: 0,
+      pirulitoSimples: 0,
+      cupcake: 0,
+      browniePalito: 0,
+      paoDeMel2D: 0,
+      paoDeMel3D: 0,
+      paoDeMelPlano: 0,
+      portaRetrato: 0,
+      popSicle: 0,
+      trufaPlana: 0,
+      trufaPersonagem: 0,
+      microCakePlano: 0,
+      miniMicroCakePlano: 0,
+      macaChocolate: 0
+    }
+  };
+
+  const sweetNames = {
+    beijinho:'Beijinho', brigadeiro:'Brigadeiro', brigadeirob:'Brigadeiro Branco',
+    casadinho:'Casadinho', cajuzinho:'Cajuzinho', cocoqueimado:'Coco Queimado',
+    morango:'Morango', ninho:'Ninho',
+    amendoas:'Amêndoas', brigadeiroBelga:'Brigadeiro Belga', churros:'Churros',
+    cremeBrulee:'Creme Brûlée', confetinho:'Confetinho', damasco:'Damasco',
+    ferreroRocher:'Ferrero Rocher', kinderBueno:'Kinder Bueno', kitKat:'Kit Kat',
+    miniOreo:'Mini Oreo', ninhoNutela:'Ninho com Nutela', olhoDeSogra:'Olho de Sogra',
+    rafaello:'Rafaello', surpresaUva:'Surpresa de Uva'
+  };
+
+  const sweetPrices = {
+    // Clássicos R$180/cento
+    beijinho:180, brigadeiro:180, brigadeirob:180, casadinho:180,
+    cajuzinho:180, cocoqueimado:180, morango:180, ninho:180,
+    // Gourmet R$210/cento
+    amendoas:210, brigadeiroBelga:210, churros:210, cremeBrulee:210,
+    confetinho:210, damasco:210, ferreroRocher:210, kinderBueno:210,
+    kitKat:210, miniOreo:210, ninhoNutela:210, olhoDeSogra:210,
+    rafaello:210, surpresaUva:210
+  };
+
+  const personalizadoNames = {
+    cupcakePlano: 'Cupcake plano',
+    miniCupcake: 'Mini Cupcake',
+    miniCupcake3D: 'Mini Cupcake 3D',
+    casinha: 'Casinha',
+    pirulitoSimples: 'Pirulito personalizado desenho simples',
+    cupcake: 'Cupcake',
+    browniePalito: 'Brownie no palito desenho simples',
+    paoDeMel2D: 'Pão de Mel 2D',
+    paoDeMel3D: 'Pão de Mel 3D',
+    paoDeMelPlano: 'Pão de Mel plano',
+    portaRetrato: 'Porta Retrato',
+    popSicle: 'Pop Sicle',
+    trufaPlana: 'Trufa desenho plano',
+    trufaPersonagem: 'Trufa formato personagem',
+    microCakePlano: 'Micro cake plano',
+    miniMicroCakePlano: 'Mini Micro cake plano',
+    macaChocolate: 'Maçã chocolate personalizada'
+  };
+
+  const personalizadoPrices = {
+    cupcakePlano: 20,
+    miniCupcake: 15,
+    miniCupcake3D: 25,
+    casinha: 25,
+    pirulitoSimples: 18,
+    cupcake: 35,
+    browniePalito: 25,
+    paoDeMel2D: 20,
+    paoDeMel3D: 35,
+    paoDeMelPlano: 20,
+    portaRetrato: 20,
+    popSicle: 25,
+    trufaPlana: 15,
+    trufaPersonagem: 22,
+    microCakePlano: 25,
+    miniMicroCakePlano: 18.50,
+    macaChocolate: 20
+  };
+
+  const extraNames = {
+    'extra-morango':'Morangos', 'extra-nutella':'Nutella',
+    'extra-brigadeiros':'Brigadeiros', 'extra-flores':'Flores Naturais',
+    'extra-toper':'Toper 2D'
+  };
+
+  const extraPrices = {
+    '10cm': {'extra-toper':20,'extra-nutella':10,'extra-morango':8,'extra-brigadeiros':10,'extra-flores':20},
+    '15cm': {'extra-toper':25,'extra-nutella':15,'extra-morango':10,'extra-brigadeiros':15,'extra-flores':25},
+    '17cm': {'extra-toper':25,'extra-nutella':18,'extra-morango':10,'extra-brigadeiros':18,'extra-flores':25},
+    '20cm': {'extra-toper':25,'extra-nutella':20,'extra-morango':10,'extra-brigadeiros':20,'extra-flores':30},
+    '23cm': {'extra-toper':28,'extra-nutella':25,'extra-morango':15,'extra-brigadeiros':30,'extra-flores':30},
+    '25cm': {'extra-toper':30,'extra-nutella':29,'extra-morango':20,'extra-brigadeiros':42,'extra-flores':30},
+    '27cm': {'extra-toper':30,'extra-nutella':35,'extra-morango':20,'extra-brigadeiros':50,'extra-flores':30},
+    '30cm': {'extra-toper':30,'extra-nutella':45,'extra-morango':20,'extra-brigadeiros':56,'extra-flores':30}
+  };
+
+  const cakeSizes = {
+    '10cm':'10 cm (5 fatias)', '15cm':'15 cm (10 fatias)', '17cm':'17 cm (15 fatias)',
+    '20cm':'20 cm (20 fatias)', '23cm':'23 cm (25 fatias)', '25cm':'25 cm (30 fatias)',
+    '27cm':'27 cm (40 fatias)', '30cm':'30 cm (50 fatias)'
+  };
+
+  const cakeTypeNames = { chantininho:'Chantininho', corte:'Bolo de Corte', pasta:'Pasta Americana' };
+
+  const defaultConfig = {
+    shop_name: 'Tita Cake Bite',
+    shop_tagline: 'Doces que encantam, momentos que ficam',
+    whatsapp_number: '5521964905907',
+    primary_color: '#e14d70', secondary_color: '#c99550',
+    accent_color: '#7d5347', background_color: '#fdf2f4',
+    text_color: '#67453d', font_family: 'Playfair Display', font_size: 16
+  };
+
+  // ── HELPERS ──
+  function getMaxFillings() { return state.cakeType === 'corte' ? 2 : 3; }
+
+  function getExtraPrice(extraId) {
+    if (!state.cake || !extraPrices[state.cake]) return 0;
+    return extraPrices[state.cake][extraId] || 0;
+  }
+
+  function resetFillingsUI() {
+    document.querySelectorAll('.filling-chip').forEach(c => { c.classList.remove('selected'); c.disabled = false; });
+    updateFillingCounter();
+  }
+
+  // ── CAKE TYPE ──
+  function selectCakeType(type) {
+    state.cakeType = type; state.cake = null; state.cakePrice = 0;
+    state.massa = null; state.fillings = []; state.extras = [];
+
+    document.querySelectorAll('.type-card').forEach(c => {
+      c.classList.toggle('selected', c.dataset.type === type);
+    });
+    document.querySelectorAll('.cake-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.massa-chip').forEach(c => c.classList.remove('selected'));
+    Object.keys(extraNames).forEach(id => { const el=document.getElementById(id); if(el) el.checked=false; });
+
+    document.getElementById('chantininho-sizes').classList.toggle('hidden', type !== 'chantininho');
+    document.getElementById('corte-info').classList.toggle('hidden',       type !== 'corte');
+    document.getElementById('pasta-info').classList.toggle('hidden',       type !== 'pasta');
+
+    const showNow = type !== 'chantininho';
+    document.getElementById('massa-section').classList.toggle('hidden', !showNow);
+    document.getElementById('fillings-section').classList.toggle('hidden', !showNow);
+    
+    // Controlar visibilidade dos adicionais (apenas para chantininho)
+    const extrasSection = document.getElementById('extras-section');
+    if (extrasSection) {
+      extrasSection.classList.toggle('hidden', type !== 'chantininho');
+    }
+
+    resetFillingsUI();
+    updateSummary();
+  }
+
+  // ── CAKE SIZE (Chantininho) ──
+  function selectCake(size, price) {
+    state.cake = size; state.cakePrice = price;
+    state.fillings = []; state.extras = []; state.massa = null;
+
+    document.querySelectorAll('.cake-card').forEach(c => {
+      c.classList.toggle('selected', c.dataset.size === size);
+    });
+    document.querySelectorAll('.massa-chip').forEach(c => c.classList.remove('selected'));
+    Object.keys(extraNames).forEach(id => { const el=document.getElementById(id); if(el) el.checked=false; });
+
+    document.getElementById('massa-section').classList.remove('hidden');
+    document.getElementById('fillings-section').classList.remove('hidden');
+    
+    // Mostrar adicionais para chantininho
+    const extrasSection = document.getElementById('extras-section');
+    if (extrasSection) {
+      extrasSection.classList.remove('hidden');
+    }
+
+    resetFillingsUI();
+    updateExtraPriceLabels();
+    updateSummary();
+  }
+
+  // ── MASSA ──
+  function selectMassa(element, massa) {
+    state.massa = massa;
+    document.querySelectorAll('.massa-chip').forEach(c => c.classList.remove('selected'));
+    element.classList.add('selected');
+    updateSummary();
+  }
+
+  // ── FILLINGS ──
+  function toggleFilling(element, filling) {
+    const maxF = getMaxFillings();
+    const idx = state.fillings.indexOf(filling);
+    if (idx > -1) {
+      state.fillings.splice(idx, 1);
+      element.classList.remove('selected');
+    } else if (state.fillings.length < maxF) {
+      state.fillings.push(filling);
+      element.classList.add('selected');
+    }
+    updateFillingCounter();
+    updateSummary();
+  }
+
+  function updateFillingCounter() {
+    const maxF = getMaxFillings();
+    document.getElementById('filling-counter').textContent = `${state.fillings.length}/${maxF} selecionados`;
+    document.querySelectorAll('.filling-chip').forEach(c => {
+      if (!c.classList.contains('selected')) c.disabled = state.fillings.length >= maxF;
+    });
+  }
+
+  // ── EXTRAS ──
+  function updateExtras() {
+    state.extras = [];
+    Object.keys(extraNames).forEach(id => {
+      if (document.getElementById(id).checked) state.extras.push(extraNames[id]);
+    });
+    updateSummary();
+  }
+
+  function updateExtraPriceLabels() {
+    Object.keys(extraNames).forEach(id => {
+      const el = document.getElementById('price-' + id);
+      if (el) { const p=getExtraPrice(id); el.textContent = p > 0 ? `R$ ${p}` : ''; }
+    });
+    const hint = document.querySelector('#fillings-section .text-chocolate-500.text-xs');
+    if (hint && state.cake) hint.textContent = '*Preços já incluídos no total';
+  }
+
+  // ── SWEETS ──
+  function updateSweet(sweet, delta) {
+    state.sweets[sweet] = Math.max(0, state.sweets[sweet] + delta);
+    document.getElementById(`qty-${sweet}`).textContent = state.sweets[sweet];
+    updateSummary();
+  }
+
+  // ── CAKE SLICES (Corte & Pasta) ──
+  function updateCakeSlices(type, delta) {
+    if (type === 'corte') {
+      state.corteSlices = Math.max(1, state.corteSlices + delta);
+      document.getElementById('corte-slices').textContent = state.corteSlices;
+      const total = state.corteSlices * 10.50;
+      document.getElementById('corte-total').textContent = total.toFixed(2);
+    } else if (type === 'pasta') {
+      state.pastaSlices = Math.max(1, state.pastaSlices + delta);
+      document.getElementById('pasta-slices').textContent = state.pastaSlices;
+      const total = state.pastaSlices * 15.00;
+      document.getElementById('pasta-total').textContent = total.toFixed(2);
+    }
+    updateSummary();
+  }
+
+  // ── PERSONALIZADOS ──
+  function updatePersonalizado(item, delta) {
+    state.personalizados[item] = Math.max(0, state.personalizados[item] + delta);
+    document.getElementById(`qty-${item}`).textContent = state.personalizados[item];
+    updateSummary();
+  }
+
+  // ── TOTAL ──
+  function calculateTotal() {
+    let total = state.cakePrice;
+    
+    // Add corte and pasta slice totals
+    if (state.cakeType === 'corte') {
+      total += state.corteSlices * 10.50;
+    } else if (state.cakeType === 'pasta') {
+      total += state.pastaSlices * 15.00;
+    }
+    
+    // Add sweets
+    Object.entries(state.sweets).forEach(([s, qty]) => {
+      if (qty > 0) total += (qty / 100) * sweetPrices[s];
+    });
+    
+    // Add personalizados
+    Object.entries(state.personalizados).forEach(([item, qty]) => {
+      if (qty > 0) total += qty * personalizadoPrices[item];
+    });
+    
+    // Add extras (only for chantininho)
+    Object.keys(extraNames).forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.checked) total += getExtraPrice(id);
+    });
+    
+    return total;
+  }
+
+  // ── SUMMARY ──
+  function updateSummary() {
+    const summary = document.getElementById('order-summary');
+    const content = document.getElementById('summary-content');
+    const hasOrder = state.cakeType || Object.values(state.sweets).some(v => v > 0) || Object.values(state.personalizados).some(v => v > 0);
+    if (!hasOrder) { summary.classList.add('hidden'); return; }
+    summary.classList.remove('hidden');
+
+    let html = '';
+
+    if (state.cakeType) {
+      const typeName = cakeTypeNames[state.cakeType];
+      let sizeName = '';
+      let priceText = '';
+      
+      if (state.cakeType === 'corte') {
+        sizeName = ` · ${state.corteSlices} fatia(s)`;
+        priceText = `R$ ${(state.corteSlices * 10.50).toFixed(2)}`;
+      } else if (state.cakeType === 'pasta') {
+        sizeName = ` · ${state.pastaSlices} fatia(s)`;
+        priceText = `R$ ${(state.pastaSlices * 15.00).toFixed(2)}`;
+      } else {
+        sizeName = ' · ' + cakeSizes[state.cake];
+        priceText = state.cakePrice > 0 ? `R$ ${state.cakePrice.toFixed(2)}` : 'Sob consulta via WhatsApp';
+      }
+      
+      html += `
+        <div class="summary-enter bg-chocolate-600/30 rounded-xl p-4">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-2xl">🎂</span>
+            <div>
+              <p class="font-semibold">${typeName}${sizeName}</p>
+              <p class="text-chocolate-300 text-sm">${priceText}</p>
+            </div>
+          </div>
+          ${state.massa ? `<div class="mt-1 text-sm"><span class="text-chocolate-300">Massa: </span>${state.massa}</div>` : ''}
+          ${state.fillings.length > 0 ? `
+            <div class="mt-3 pt-3 border-t border-chocolate-500">
+              <p class="text-chocolate-300 text-sm mb-2">Recheios:</p>
+              <div class="flex flex-wrap gap-2">
+                ${state.fillings.map(f=>`<span class="bg-rose-500/30 px-3 py-1 rounded-full text-sm">${f}</span>`).join('')}
+              </div>
+            </div>` : ''}
+          ${state.extras.length > 0 && state.cakeType === 'chantininho' ? `
+            <div class="mt-3 pt-3 border-t border-chocolate-500">
+              <p class="text-chocolate-300 text-sm mb-2">Adicionais:</p>
+              <div class="flex flex-wrap gap-2">
+                ${state.extras.map(e => {
+                  const id = Object.keys(extraNames).find(k=>extraNames[k]===e);
+                  const p = id ? getExtraPrice(id) : 0;
+                  return `<span class="bg-beige-500/30 px-3 py-1 rounded-full text-sm">${e}${p>0?' · R$ '+p:''}</span>`;
+                }).join('')}
+              </div>
+            </div>` : ''}
+        </div>`;
+    }
+
+    const orderedSweets = Object.entries(state.sweets).filter(([,qty])=>qty>0);
+    if (orderedSweets.length > 0) {
+      html += `
+        <div class="summary-enter bg-chocolate-600/30 rounded-xl p-4">
+          <div class="flex items-center gap-3 mb-3"><span class="text-2xl">🍬</span><p class="font-semibold">Doces Finos</p></div>
+          <div class="space-y-2">
+            ${orderedSweets.map(([s,qty])=>{
+              const p=(qty/100)*sweetPrices[s];
+              return `<div class="flex justify-between text-sm text-chocolate-300">
+                <span>${sweetNames[s]} (${qty})</span><span>R$ ${p.toFixed(2)}</span></div>`;
+            }).join('')}
+          </div>
+        </div>`;
+    }
+
+    const orderedPersonalizados = Object.entries(state.personalizados).filter(([,qty])=>qty>0);
+    if (orderedPersonalizados.length > 0) {
+      html += `
+        <div class="summary-enter bg-chocolate-600/30 rounded-xl p-4">
+          <div class="flex items-center gap-3 mb-3"><span class="text-2xl">✨</span><p class="font-semibold">Personalizados</p></div>
+          <div class="space-y-2">
+            ${orderedPersonalizados.map(([item,qty])=>{
+              const p=qty*personalizadoPrices[item];
+              return `<div class="flex justify-between text-sm text-chocolate-300">
+                <span>${personalizadoNames[item]} (${qty})</span><span>R$ ${p.toFixed(2)}</span></div>`;
+            }).join('')}
+          </div>
+        </div>`;
+    }
+
+    content.innerHTML = html;
+    document.getElementById('total-price').textContent = `R$ ${calculateTotal().toFixed(2)}`;
+  }
+
+  // ── WHATSAPP ──
+  document.getElementById('send-whatsapp').onclick = (e) => {
+    e.preventDefault();
+    const mensagem = generateWhatsAppMessage();
+    // Ensure UTF-8 string and prevent double encoding
+    const cleanMessage = new TextEncoder().encode(mensagem).reduce((acc, byte) => acc + String.fromCharCode(byte), '');
+    window.open(`https://wa.me/${defaultConfig.whatsapp_number}?text=${encodeURIComponent(cleanMessage)}`, '_blank');
+  };
+
+  function generateWhatsAppMessage() {
+    let msg = '🧁 *Pedido - Tita Cake Bite*\n\n';
+    if (state.cakeType) {
+      const typeName = cakeTypeNames[state.cakeType];
+      let sizeInfo = '';
+      
+      if (state.cakeType === 'corte') {
+        sizeInfo = ` - ${state.corteSlices} fatia(s)`;
+      } else if (state.cakeType === 'pasta') {
+        sizeInfo = ` - ${state.pastaSlices} fatia(s)`;
+      } else {
+        sizeInfo = state.cake ? ' - ' + cakeSizes[state.cake] : '';
+      }
+      
+      msg += `🎂 *Bolo:* ${typeName}${sizeInfo}\n`;
+      if (state.massa)  msg += `Massa: ${state.massa}\n`;
+      if (state.fillings.length > 0) msg += `Recheios: ${state.fillings.join(', ')}\n`;
+      if (state.extras.length  > 0 && state.cakeType === 'chantininho') msg += `Adicionais: ${state.extras.join(', ')}\n`;
+      msg += '\n';
+    }
+    
+    let temDoces = false;
+    for (const doce in state.sweets) {
+      if (state.sweets[doce] > 0) {
+        if (!temDoces) { msg += '🍬 *Doces:*\n'; temDoces = true; }
+        msg += `${sweetNames[doce]} - ${state.sweets[doce]} unidades\n`;
+      }
+    }
+    
+    if (temDoces) msg += '\n';
+    
+    let temPersonalizados = false;
+    for (const item in state.personalizados) {
+      if (state.personalizados[item] > 0) {
+        if (!temPersonalizados) { msg += '✨ *Personalizados:*\n'; temPersonalizados = true; }
+        msg += `${personalizadoNames[item]} - ${state.personalizados[item]} unidades\n`;
+      }
+    }
+    
+    if (temPersonalizados) msg += '\n';
+    
+    msg += `✨ Total: R$ ${calculateTotal().toFixed(2)}`;
+    msg += '\nAguardo confirmação do pedido!';
+    return msg;
+  }
+
+  // ── ELEMENT SDK ──
+  if (window.elementSdk) {
+    window.elementSdk.init({
+      defaultConfig,
+      onConfigChange: async (config) => {
+        document.getElementById('shop-name').textContent    = config.shop_name    || defaultConfig.shop_name;
+        document.getElementById('shop-tagline').textContent = config.shop_tagline || defaultConfig.shop_tagline;
+        const primaryColor = config.primary_color || defaultConfig.primary_color;
+        document.body.style.backgroundColor = config.background_color || defaultConfig.background_color;
+        document.body.style.color           = config.text_color        || defaultConfig.text_color;
+        document.querySelectorAll('.decorative-line').forEach(el => {
+          el.style.background = `linear-gradient(90deg, transparent, ${primaryColor}, transparent)`;
+        });
+        const ff = config.font_family || defaultConfig.font_family;
+        document.querySelectorAll('.font-display').forEach(el => { el.style.fontFamily = `${ff}, serif`; });
+        document.body.style.fontSize = `${config.font_size || defaultConfig.font_size}px`;
+      },
+      mapToCapabilities: (config) => ({
+        recolorables: [
+          { get:()=>config.background_color||defaultConfig.background_color, set:(v)=>{config.background_color=v;window.elementSdk.setConfig({background_color:v});} },
+          { get:()=>config.text_color||defaultConfig.text_color,             set:(v)=>{config.text_color=v;window.elementSdk.setConfig({text_color:v});} },
+          { get:()=>config.primary_color||defaultConfig.primary_color,       set:(v)=>{config.primary_color=v;window.elementSdk.setConfig({primary_color:v});} },
+          { get:()=>config.secondary_color||defaultConfig.secondary_color,   set:(v)=>{config.secondary_color=v;window.elementSdk.setConfig({secondary_color:v});} },
+          { get:()=>config.accent_color||defaultConfig.accent_color,         set:(v)=>{config.accent_color=v;window.elementSdk.setConfig({accent_color:v});} }
+        ],
+        borderables: [],
+        fontEditable:  { get:()=>config.font_family||defaultConfig.font_family, set:(v)=>{config.font_family=v;window.elementSdk.setConfig({font_family:v});} },
+        fontSizeable:  { get:()=>config.font_size||defaultConfig.font_size,     set:(v)=>{config.font_size=v;window.elementSdk.setConfig({font_size:v});} }
+      }),
+      mapToEditPanelValues: (config) => new Map([
+        ['shop_name',    config.shop_name    || defaultConfig.shop_name],
+        ['shop_tagline', config.shop_tagline || defaultConfig.shop_tagline]
+      ])
+    });
+  }
+</script>
+</body>
+</html>
