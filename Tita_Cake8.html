@@ -293,11 +293,6 @@
               <span class="text-chocolate-700 font-medium text-sm flex-1">🌼 Flores Naturais</span>
               <span id="price-extra-flores" class="text-rose-600 text-xs font-semibold"></span>
             </label>
-            <label class="flex items-center gap-3 p-3 rounded-xl border-2 border-chocolate-200 hover:bg-rose-50 cursor-pointer">
-              <input type="checkbox" id="extra-toper"      onchange="updateExtras()" class="w-4 h-4 accent-rose-600">
-              <span class="text-chocolate-700 font-medium text-sm flex-1">✨ Toper 2D</span>
-              <span id="price-extra-toper" class="text-rose-600 text-xs font-semibold"></span>
-            </label>
             
             <!-- Topo de Bolo -->
             <label class="flex items-center gap-3 p-3 rounded-xl border-2 border-chocolate-200 hover:bg-rose-50 cursor-pointer">
@@ -986,19 +981,18 @@
 
   const extraNames = {
     'extra-morango':'Morangos', 'extra-nutella':'Nutella',
-    'extra-brigadeiros':'Brigadeiros', 'extra-flores':'Flores Naturais',
-    'extra-toper':'Toper 2D'
+    'extra-brigadeiros':'Brigadeiros', 'extra-flores':'Flores Naturais'
   };
 
   const extraPrices = {
-    '10cm': {'extra-toper':20,'extra-nutella':10,'extra-morango':8,'extra-brigadeiros':10,'extra-flores':20},
-    '15cm': {'extra-toper':25,'extra-nutella':15,'extra-morango':10,'extra-brigadeiros':15,'extra-flores':25},
-    '17cm': {'extra-toper':25,'extra-nutella':18,'extra-morango':10,'extra-brigadeiros':18,'extra-flores':25},
-    '20cm': {'extra-toper':25,'extra-nutella':20,'extra-morango':10,'extra-brigadeiros':20,'extra-flores':30},
-    '23cm': {'extra-toper':28,'extra-nutella':25,'extra-morango':15,'extra-brigadeiros':30,'extra-flores':30},
-    '25cm': {'extra-toper':30,'extra-nutella':29,'extra-morango':20,'extra-brigadeiros':42,'extra-flores':30},
-    '27cm': {'extra-toper':30,'extra-nutella':35,'extra-morango':20,'extra-brigadeiros':50,'extra-flores':30},
-    '30cm': {'extra-toper':30,'extra-nutella':45,'extra-morango':20,'extra-brigadeiros':56,'extra-flores':30}
+    '10cm': {'extra-nutella':10,'extra-morango':8,'extra-brigadeiros':10,'extra-flores':20},
+    '15cm': {'extra-nutella':15,'extra-morango':10,'extra-brigadeiros':15,'extra-flores':25},
+    '17cm': {'extra-nutella':18,'extra-morango':10,'extra-brigadeiros':18,'extra-flores':25},
+    '20cm': {'extra-nutella':20,'extra-morango':10,'extra-brigadeiros':20,'extra-flores':30},
+    '23cm': {'extra-nutella':25,'extra-morango':15,'extra-brigadeiros':30,'extra-flores':30},
+    '25cm': {'extra-nutella':29,'extra-morango':20,'extra-brigadeiros':42,'extra-flores':30},
+    '27cm': {'extra-nutella':35,'extra-morango':20,'extra-brigadeiros':50,'extra-flores':30},
+    '30cm': {'extra-nutella':45,'extra-morango':20,'extra-brigadeiros':56,'extra-flores':30}
   };
 
   const cakeSizes = {
